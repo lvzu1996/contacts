@@ -1,0 +1,7 @@
+cd ASP.NET_VUEJS
+cd contactfront
+npm run build
+cd dist
+copy *.* ../../Views/App/
+ren index.html index.cshtml
+xcopy static ../../ /y
