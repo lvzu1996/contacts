@@ -6,10 +6,9 @@
     </div>
     <form action="App/addContact" method="post" name="contact" id="contact-form">
       <div>name:</div><input v-model="form.name" @blur="_validate(form.name,'name')" type="text" name="name" ><br>
-      <div>avatar:</div><input v-model="form.avatar" type="text" name="avatar" ><br>
-      <div>phone1</div><input v-model="form.phonenum1" @blur="_validate(form.phonenum1,'phone')" maxlength="11" type="text" name="phoneNum1" ><br>
-      <div>phone2</div><input v-model="form.phonenum2" @blur="_validate(form.phonenum2,'phone')" maxlength="11" type="text" name="phoneNum2"><br>
-      <div>addrss:</div><input v-model="form.address" type="text" name="address"><br>
+      <div>gender:</div><input v-model="form.gender" type="text" name="gender" ><br>
+      <div>company:</div><input v-model="form.company" type="text" name="company"><br>
+      <div>phone:</div><input v-model="form.phonenumber" @blur="_validate(form.phonenumber,'phone')" maxlength="11" type="text" name="phonenumber" ><br>
       <input type="button" value="提交" @click="_toAdd">
       <input type="button" name="backbtn" value="返回" @click="_toQuery">
     </form>
@@ -25,10 +24,9 @@ export default {
       host:'http://localhost:52177',
       form:{
         name:'',
-        avatar:'',
-        phonenum1:'',
-        phonenum2:'',
-        address:''
+        gender:'',
+        company:'',
+        phonenumber:'',
       },
     }
   },
@@ -47,13 +45,13 @@ export default {
         t.$message.error('姓名不能为空！');
         return
       }
-      if(!lvValidate.inputValidate(t.form.phonenum1,'phone') || !lvValidate.inputValidate(t.form.phonenum2,'phone')){
+      if(!lvValidate.inputValidate(t.form.phonenumber,'phone')){
         t.$message.error('手机号输入有误！');
         return
       }
-      fetch(`/App/AddContact`,{
+      fetch(`http://localhost:52177/App/AddContact`,{
         method:'post',
-        body: `id=1&name=${t.form.name}&avatar=${t.form.avatar}&phonenum1=${t.form.phonenum1}&phonenum2=${t.form.phonenum2}&address=${t.form.address}`,
+        body: `id=1&name=${t.form.name}&gender=${t.form.gender}&company=${t.form.company}&phonenumber=${t.form.phonenumber}`,
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/x-www-form-urlencoded"

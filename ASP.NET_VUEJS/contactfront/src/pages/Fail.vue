@@ -15,7 +15,8 @@ export default {
     this.type = this.$route.query.type;
     this.msg={'add':'添加失败，两秒后跳转......',
               'revice':'修改失败，两秒后跳转......',
-              'remove':'删除失败，两秒后跳转......'}[this.type];
+              'remove':'删除失败，两秒后跳转......',
+              'usedpn':'此号码已经使用了！'}[this.type];
   },
   mounted() {
     const t = this
@@ -23,7 +24,7 @@ export default {
       t.$router.push({
         path: '/'
       })
-    },2000)
+    },4000)
   }
 }
 </script>

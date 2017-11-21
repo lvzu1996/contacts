@@ -12,7 +12,7 @@ export default {
 
 <style>
 #app {
-  width: 1000px;
+  width: 1200px;
   margin: 0 auto;
   text-align: center;
   color: #2c3e50;

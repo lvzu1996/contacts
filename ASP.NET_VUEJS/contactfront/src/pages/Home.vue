@@ -3,16 +3,18 @@
   <div class="query-top">
     <h1>联系人列表</h1>
     <input type="button" name="addbtn" value="新增联系人" @click="_toAdd">
+    <input type="button" name="sortbytime" value="按时间排序" @click="_sortByTime">
   </div>
   <div class="query-contactList">
   
-      <div class="query-contact" v-for="item in contactList" :key="item.key">
+      <div class="query-contact" v-for="item,index in contactList" :key="item.key">
         <div class="query-infos">
           <img src="http://lvzu-imgs.oss-cn-hangzhou.aliyuncs.com/%E4%B8%8B%E8%BD%BD.png" alt="none">
           <span>{{item.name}}</span>
-          <span>{{item.phonenum1}}</span>
-          <span>{{item.phonenum2}}</span>
-          <span>{{item.address}}</span>
+          <span>{{item.gender}}</span>
+          <span>{{item.company}}</span>
+          <span>{{item.phonenumber}}</span>
+          <span>{{showDate[index]}}</span>
         </div>
         <div class="query-btns">
           <input type="button" name="removeBtn" @click="_toRemove(item.id)" value="删除">
@@ -25,26 +27,46 @@
 </template>
 
 <script>
+import 'moment'
+
+const DATEFORMATE = "yyyy-MM-dd";
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
 export default {
   data(){
     return {
       host:'http://localhost:52177/App',
       contactList:[],
+      dateList:[],
+      originDateList:[]
     }
   },
   
   mounted() {
-      fetch(`${this.host}/QueryContact`)
+    var _this = this
+      fetch(`${_this.host}/QueryContact`)
       .then(re => re.json())
       .then(re =>{
-        this.contactList = re
+        _this.contactList = re
+        for(var i of re){
+          _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+          _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+        }
       })
-      // this.contactList = [
-      //   {id:1,name:2,avatar:3,phonenum1:1,phonenum2:2,address:3},
-      //   {id:1,name:2,avatar:3,phonenum1:1,phonenum2:2,address:3},
-      //   {id:1,name:2,avatar:3,phonenum1:1,phonenum2:2,address:3},
-      //   {id:1,name:2,avatar:3,phonenum1:1,phonenum2:2,address:3},
-      //   {id:1,name:2,avatar:3,phonenum1:1,phonenum2:2,address:3}]
   },
 
   methods: {
@@ -73,9 +95,26 @@ export default {
             })
           }
         })
-    }
+    },
+    _sortByTime(){
+      if(this.dateList.toString() != this.originDateList.toString()){
+        this.dateList = this.originDateList
+        return 
+      }
+      var temp = this.dateList.sort((a, b) => b.getTime() - a.getTime())
+      this.dateList = temp;
+    },
   },
 
+  computed: {
+      showDate(){
+        
+        //对paihang这个数组的操作
+        var showList = this.dateList.map( date => date.Format(DATEFORMATE))
+        return showList
+      }
+
+  },
 
 }
 </script>
