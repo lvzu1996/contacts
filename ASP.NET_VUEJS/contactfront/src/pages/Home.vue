@@ -68,13 +68,7 @@ export default {
     var _this = this
       fetch(`/App/QueryContact`)
       .then(re => re.json())
-      .then(re =>{
-        _this.contactList = re
-        for(var i of re){
-          _this.dateList.push(eval('new ' + eval(i.createdtime).source))
-          _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
-        }
-      })
+      .then(re =>{_this.__handleData(re)})
   },
 
   methods: {
@@ -108,15 +102,7 @@ export default {
       var _this = this
       fetch(`/App/QueryContactByDate`)
         .then(re => re.json())
-        .then(re =>{
-          _this.contactList = re
-          _this.dateList = []
-          _this.originDateList = []
-          for(var i of re){
-            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
-            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
-          }
-        })
+        .then(re =>{_this.__handleData(re)})
       // if(this.dateList.toString() != this.originDateList.toString()){
       //   this.dateList = this.originDateList
       //   return 
@@ -131,48 +117,36 @@ export default {
       var _this = this
       fetch(`/App/QueryMaleContact`)
         .then(re => re.json())
-        .then(re =>{
-          _this.contactList = re
-          _this.dateList = []
-          _this.originDateList = []
-          for(var i of re){
-            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
-            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
-          }
-        })
+        .then(re =>{_this.__handleData(re)})
     },
     _getWoman(){
       var _this = this
       fetch(`/App/QueryFemaleContact`)
         .then(re => re.json())
-        .then(re =>{
-          _this.contactList = re
-          _this.dateList = []
-          _this.originDateList = []
-          for(var i of re){
-            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
-            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
-          }
-        })
+        .then(re =>{_this.__handleData(re)})
     },
     _search(){
       var _this = this
       fetch(`/App/SearchContact?key=${_this.searchStr}`)
         .then(re => re.json())
         .then(re =>{
-          _this.contactList = re
-          _this.dateList = []
-          _this.originDateList = []
-          for(var i of re){
-            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
-            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
-          }
+          _this.__handleData(re)
         })
     },
     _getDetailInfo(id){
       this.$router.push({
         path: `/detailinfo?id=${id}`
       })
+    },
+    __handleData(re){
+      var _this = this
+      _this.contactList = re
+      _this.dateList = []
+      _this.originDateList = []
+      for(var i of re){
+        _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+        _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+      }
     },
 
   },
