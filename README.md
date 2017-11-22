@@ -47,7 +47,7 @@ INSERT INTO `contacts` VALUES ('7', '123', '男', '123', '13777821012', '2017-11
 ```
 - ## build
 进入contactfront 文件夹下
-npm install
+npm install  
 npm run build
 
 - ## Web.config
