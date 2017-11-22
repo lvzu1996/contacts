@@ -1,7 +1,14 @@
 <template lang="html">
 <div>
   <div class="query-top">
-    <h1>联系人列表</h1>
+    <h1 @click="_refresh" id="contact">联系人列表</h1>
+    <svg class="icon" aria-hidden="true" @click="_getMan">
+      <use xlink:href="#icon-nan"></use>
+    </svg>
+    <svg class="icon" aria-hidden="true" @click="_getWoman">
+      <use xlink:href="#icon-nv"></use>
+    </svg>
+    <el-input v-model="searchStr" placeholder="请输入内容" @change='_search' style='width:200px;'></el-input>
     <input type="button" name="addbtn" value="新增联系人" @click="_toAdd">
     <input type="button" name="sortbytime" value="按时间排序" @click="_sortByTime">
   </div>
@@ -9,7 +16,7 @@
   
       <div class="query-contact" v-for="item,index in contactList" :key="item.key">
         <div class="query-infos">
-          <img src="http://lvzu-imgs.oss-cn-hangzhou.aliyuncs.com/%E4%B8%8B%E8%BD%BD.png" alt="none">
+          <img src="http://lvzu-imgs.oss-cn-hangzhou.aliyuncs.com/%E4%B8%8B%E8%BD%BD.png" alt="none" @click='_getDetailInfo(item.id)' class='avatar'>
           <span>{{item.name}}</span>
           <span>{{item.gender}}</span>
           <span>{{item.company}}</span>
@@ -52,13 +59,14 @@ export default {
       host:'http://localhost:52177/App',
       contactList:[],
       dateList:[],
-      originDateList:[]
+      originDateList:[],
+      searchStr:'',
     }
   },
   
   mounted() {
     var _this = this
-      fetch(`${_this.host}/QueryContact`)
+      fetch(`/App/QueryContact`)
       .then(re => re.json())
       .then(re =>{
         _this.contactList = re
@@ -82,7 +90,7 @@ export default {
       })
     },
     _toRemove(id){
-      fetch(`${this.host}/RemoveContact?id=${id}`)
+      fetch(`/App/RemoveContact?id=${id}`)
         .then(re => re.json())
         .then(re => {
           if(re.msg == "success"){
@@ -97,13 +105,76 @@ export default {
         })
     },
     _sortByTime(){
-      if(this.dateList.toString() != this.originDateList.toString()){
-        this.dateList = this.originDateList
-        return 
-      }
-      var temp = this.dateList.sort((a, b) => b.getTime() - a.getTime())
-      this.dateList = temp;
+      var _this = this
+      fetch(`/App/QueryContactByDate`)
+        .then(re => re.json())
+        .then(re =>{
+          _this.contactList = re
+          _this.dateList = []
+          _this.originDateList = []
+          for(var i of re){
+            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+          }
+        })
+      // if(this.dateList.toString() != this.originDateList.toString()){
+      //   this.dateList = this.originDateList
+      //   return 
+      // }
+      // var temp = this.dateList.sort((a, b) => b.getTime() - a.getTime())
+      // this.dateList = temp;
     },
+    _refresh(){
+      location.reload()
+    },
+    _getMan(){
+      var _this = this
+      fetch(`/App/QueryMaleContact`)
+        .then(re => re.json())
+        .then(re =>{
+          _this.contactList = re
+          _this.dateList = []
+          _this.originDateList = []
+          for(var i of re){
+            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+          }
+        })
+    },
+    _getWoman(){
+      var _this = this
+      fetch(`/App/QueryFemaleContact`)
+        .then(re => re.json())
+        .then(re =>{
+          _this.contactList = re
+          _this.dateList = []
+          _this.originDateList = []
+          for(var i of re){
+            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+          }
+        })
+    },
+    _search(){
+      var _this = this
+      fetch(`/App/SearchContact?key=${_this.searchStr}`)
+        .then(re => re.json())
+        .then(re =>{
+          _this.contactList = re
+          _this.dateList = []
+          _this.originDateList = []
+          for(var i of re){
+            _this.dateList.push(eval('new ' + eval(i.createdtime).source))
+            _this.originDateList.push(eval('new ' + eval(i.createdtime).source))
+          }
+        })
+    },
+    _getDetailInfo(id){
+      this.$router.push({
+        path: `/detailinfo?id=${id}`
+      })
+    },
+
   },
 
   computed: {
@@ -120,6 +191,12 @@ export default {
 </script>
 
 <style lang="css">
+#contact:hover{
+  cursor: pointer;
+}
+.icon:hover{
+  cursor: pointer;
+}
 .query-top{
   margin-top: 30px;
   display: flex;
@@ -209,6 +286,10 @@ float:right;
 }
 .query-btns > input[type="button"] :hover{
   background-color: #FF7680;
+}
+
+.avatar:hover{
+  cursor: pointer;
 }
 
 </style>

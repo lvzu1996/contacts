@@ -7,6 +7,7 @@ const Add = () => import('@/pages/Add')
 const Revice = () => import('@/pages/Revice')
 const Success = () => import('@/pages/Success')
 const Fail = () => import('@/pages/Fail')
+const DetailInfo = () => import('@/pages/DetailInfo')
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/detailinfo',
+      name: 'DetailInfo',
+      component: DetailInfo
     },
     {
       path:'/add',

@@ -49,7 +49,7 @@ export default {
         t.$message.error('手机号输入有误！');
         return
       }
-      fetch(`http://localhost:52177/App/AddContact`,{
+      fetch(`/App/AddContact`,{
         method:'post',
         body: `id=1&name=${t.form.name}&gender=${t.form.gender}&company=${t.form.company}&phonenumber=${t.form.phonenumber}`,
         headers: {

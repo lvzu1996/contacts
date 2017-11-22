@@ -32,13 +32,53 @@ namespace ASP.NET_VUEJS.Controllers
         public JsonResult QueryContact()
         {
             using (IDbConnection conn = OpenConnection())
-            {
+            {   
                 const string query = "select * from contacts order by id desc";
                 var contactList = conn.Query<Contact>(query, null);
                 return Json(contactList, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
+        public JsonResult QueryContactByDate()
+        {
+            using (IDbConnection conn = OpenConnection())
+            {
+                const string query = "select * from contacts order by createdtime desc";
+                var contactList = conn.Query<Contact>(query, null);
+                return Json(contactList, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult SearchContact(string key)
+        {
+            using (IDbConnection conn = OpenConnection())
+            {
+                string query = $"select * from contacts where name like '%{key}%' or company like '%{key}%' order by id desc";
+                var contactList = conn.Query<Contact>(query, null);
+                return Json(contactList, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult QueryMaleContact()
+        {
+            using (IDbConnection conn = OpenConnection())
+            {
+                const string query = "select * from contacts where gender='男' order by id desc ";
+                var contactList = conn.Query<Contact>(query, null);
+                return Json(contactList, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult QueryFemaleContact()
+        {
+            using (IDbConnection conn = OpenConnection())
+            {
+                const string query = "select * from contacts where gender='女' order by id desc";
+                var contactList = conn.Query<Contact>(query, null);
+                return Json(contactList, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpGet]
         public JsonResult RemoveContact(int id)
         {
@@ -76,7 +116,8 @@ namespace ASP.NET_VUEJS.Controllers
         {
           using (IDbConnection conn = OpenConnection())
           {
-              string query = $"update contacts set name='{contact.name}',phonenum1='{contact.phonenum1}',phonenum2='{contact.phonenum2}',address='{contact.address}' where id={contact.id}";
+                
+              string query = $"update contacts set name='{contact.name}',phonenumber='{contact.phonenumber}',company='{contact.company}',gender='{contact.gender}' where id={contact.id}";
               var affected = conn.Execute(query, null);
               var data = new {msg="success",error_num="0"};
               if(affected == 1)
@@ -96,7 +137,14 @@ namespace ASP.NET_VUEJS.Controllers
         {
           using (IDbConnection conn = OpenConnection())
           {
-              string query = $"INSERT INTO contacts (name,avatar,phonenum1,phonenum2,address) VALUES('{contact.name}','{contact.avatar}','{contact.phonenum1}','{contact.phonenum2}','{contact.address}')";
+              string validateQuery = $"select * from contacts where phonenumber = {contact.phonenumber}";
+              var contactList = conn.Query<Contact>(validateQuery, null);
+              if(contactList.Any())
+                {
+                    var res = new { msg = "used phonenumber", error_num = "0" };
+                    return Json(res, JsonRequestBehavior.AllowGet);
+                }  
+              string query = $"INSERT INTO contacts (name,gender,company,phonenumber) VALUES('{contact.name}','{contact.gender}','{contact.company}','{contact.phonenumber}')";
               var affected = conn.Execute(query, null);
               var data = new {msg="success",error_num="0"};
               if(affected == 1)

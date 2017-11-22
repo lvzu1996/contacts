@@ -47,7 +47,7 @@ export default {
         t.$message.error('手机号输入有误！');
         return
       }
-      fetch(`http://localhost:52177/App/ReviceContact`,{
+      fetch(`/App/ReviceContact`,{
         method:'post',
         body: `id=${t.form.id}&name=${t.form.name}&gender=${t.form.gender}&company=${t.form.company}&phonenumber=${t.form.phonenumber}`,
         headers: {
@@ -89,7 +89,7 @@ export default {
   created() {
     //do something before mounting vue instance
     this.id = this.$route.query.id;
-    fetch(`${this.host}/QuerySingleContact?id=${this.id}`)
+    fetch(`/App/QuerySingleContact?id=${this.id}`)
     .then(res => res.json())
     .then(res => {
       this.form = res[0]

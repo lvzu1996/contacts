@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'app'
 }
@@ -18,4 +19,14 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.icon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.30em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+
 </style>
